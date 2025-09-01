@@ -8,6 +8,9 @@ var app = require('../app');
 var debug = require('debug')('redbagserver:server');
 var http = require('http');
 
+// 导入数据库连接
+const { connectDB } = require('../src/config/database');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -28,6 +31,9 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+// 连接数据库
+connectDB();
 
 /**
  * Normalize a port into a number, string, or false.
@@ -87,4 +93,8 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log(`🚀 服务器启动成功，监听端口: ${bind}`);
+  console.log(`📱 自动抢红包应用后端服务已启动`);
+  console.log(`🌐 访问地址: http://localhost:${port}`);
+  console.log(`📚 API文档: http://localhost:${port}/api`);
 }
