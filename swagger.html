@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动抢红包应用 API 接口文档</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; padding: 30px; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 2.5em; }
+        .header p { margin: 10px 0 0; opacity: 0.9; }
+        .content { padding: 30px; }
+        .section { margin-bottom: 40px; }
+        .section h2 { color: #2c3e50; border-bottom: 2px solid #ff6b6b; padding-bottom: 10px; }
+        .endpoint { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; margin: 20px 0; overflow: hidden; }
+        .endpoint-header { background: #e9ecef; padding: 15px; display: flex; align-items: center; }
+        .method { padding: 6px 12px; border-radius: 4px; color: white; font-weight: bold; font-size: 12px; margin-right: 15px; }
+        .method.get { background: #28a745; }
+        .method.post { background: #007bff; }
+        .method.put { background: #ffc107; color: #212529; }
+        .method.delete { background: #dc3545; }
+        .endpoint-path { font-family: monospace; font-size: 16px; color: #495057; }
+        .endpoint-description { padding: 20px; }
+        .params-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .params-table th, .params-table td { border: 1px solid #dee2e6; padding: 12px; text-align: left; }
+        .params-table th { background: #f8f9fa; font-weight: 600; }
+        .code-block { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 15px; margin: 15px 0; overflow-x: auto; }
+        .code-block pre { margin: 0; font-family: 'Monaco', 'Menlo', monospace; font-size: 14px; }
+        .response-example { background: #e8f5e8; border: 1px solid #c8e6c9; border-radius: 4px; padding: 15px; margin: 15px 0; }
+        .response-example h4 { margin: 0 0 10px; color: #2e7d32; }
+        .note { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; padding: 15px; margin: 15px 0; }
+        .note h4 { margin: 0 0 10px; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧧 自动抢红包应用 API 接口文档</h1>
+            <p>基于 React Native + Expo 的智能自动抢红包应用后端接口规范</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 接口概览</h2>
+                <p>本应用需要以下主要接口模块：</p>
+                <ul>
+                    <li><strong>用户认证</strong> - 登录、注册、用户信息管理</li>
+                    <li><strong>红包监控</strong> - 群聊监控、应用监听管理</li>
+                    <li><strong>红包记录</strong> - 抢红包历史、统计数据</li>
+                    <li><strong>策略设置</strong> - 抢红包策略、应用配置</li>
+                    <li><strong>通知系统</strong> - 消息通知、推送服务</li>
+                    <li><strong>数据分析</strong> - 收益统计、趋势分析</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>🔐 用户认证接口</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/auth/send-code</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>发送验证码</h3>
+                        <p>向指定手机号发送短信验证码</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>phone</td><td>string</td><td>是</td><td>手机号码</td></tr>
+                            <tr><td>type</td><td>string</td><td>是</td><td>验证码类型：register(注册) / login(登录) / reset(重置密码)</td></tr>
+                        </table>
+                        
+                        <h4>响应示例</h4>
+                        <div class="response-example">
+                            <h4>成功响应 (200)</h4>
+                            <div class="code-block">
+                                <pre>{
+  "code": 200,
+  "message": "验证码发送成功",
+  "data": {
+    "expiresIn": 300,
+    "message": "验证码已发送到您的手机，5分钟内有效"
+  }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/auth/register</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>用户注册</h3>
+                        <p>新用户注册接口，支持手机号验证码注册</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>phone</td><td>string</td><td>是</td><td>手机号码</td></tr>
+                            <tr><td>code</td><td>string</td><td>是</td><td>验证码</td></tr>
+                            <tr><td>nickname</td><td>string</td><td>否</td><td>用户昵称</td></tr>
+                            <tr><td>password</td><td>string</td><td>否</td><td>登录密码（可选）</td></tr>
+                        </table>
+                        
+                        <h4>响应示例</h4>
+                        <div class="response-example">
+                            <h4>成功响应 (200)</h4>
+                            <div class="code-block">
+                                <pre>{
+  "code": 200,
+  "message": "注册成功",
+  "data": {
+    "userId": "user_123456",
+    "phone": "13800138000",
+    "nickname": "张三",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expiresIn": 7200
+  }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/auth/login</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>用户登录</h3>
+                        <p>支持手机号验证码登录和密码登录</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>phone</td><td>string</td><td>是</td><td>手机号码</td></tr>
+                            <tr><td>code</td><td>string</td><td>否</td><td>验证码（验证码登录时必填）</td></tr>
+                            <tr><td>password</td><td>string</td><td>否</td><td>密码（密码登录时必填）</td></tr>
+                            <tr><td>loginType</td><td>string</td><td>是</td><td>登录类型：code(验证码) / password(密码)</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/user/profile</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取用户信息</h3>
+                        <p>获取当前登录用户的详细信息</p>
+                        
+                        <h4>请求头</h4>
+                        <div class="code-block">
+                            <pre>Authorization: Bearer {token}</pre>
+                        </div>
+                        
+                        <h4>响应示例</h4>
+                        <div class="response-example">
+                            <h4>成功响应 (200)</h4>
+                            <div class="code-block">
+                                <pre>{
+  "code": 200,
+  "data": {
+    "id": "user_123456",
+    "phone": "138****8888",
+    "nickname": "张三",
+    "avatar": "https://example.com/avatar.jpg",
+    "totalEarnings": 1256.80,
+    "todayEarnings": 156.80,
+    "redPacketCount": 1280,
+    "successRate": 99.8,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "lastLoginAt": "2024-12-19T10:30:00Z"
+  }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method put">PUT</span>
+                        <span class="endpoint-path">/api/user/profile</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>更新用户信息</h3>
+                        <p>更新当前登录用户的个人信息</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>nickname</td><td>string</td><td>否</td><td>用户昵称</td></tr>
+                            <tr><td>avatar</td><td>string</td><td>否</td><td>头像URL</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/auth/logout</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>用户退出登录</h3>
+                        <p>用户退出登录，清除会话信息</p>
+                        
+                        <h4>响应示例</h4>
+                        <div class="response-example">
+                            <h4>成功响应 (200)</h4>
+                            <div class="code-block">
+                                <pre>{
+  "code": 200,
+  "message": "退出登录成功",
+  "data": null
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>👁️ 红包监控接口</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/monitoring/apps</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取应用监听状态</h3>
+                        <p>获取所有应用的监听状态和统计信息</p>
+                        
+                        <h4>响应示例</h4>
+                        <div class="response-example">
+                            <h4>成功响应 (200)</h4>
+                            <div class="code-block">
+                                <pre>{
+  "code": 200,
+  "data": [
+    {
+      "id": "wechat",
+      "name": "微信",
+      "icon": "💬",
+      "isMonitoring": true,
+      "lastRedPacket": {
+        "id": "rp_123",
+        "amount": "¥8.88",
+        "groupName": "家人群",
+        "sender": "妈妈",
+        "timestamp": 1702972200000
+      },
+      "todayCount": 15,
+      "totalEarnings": 156.80
+    }
+  ]
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/monitoring/groups</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取监控群聊列表</h3>
+                        <p>获取用户监控的群聊列表</p>
+                        
+                        <h4>查询参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>page</td><td>number</td><td>否</td><td>页码，默认1</td></tr>
+                            <tr><td>size</td><td>number</td><td>否</td><td>每页大小，默认20</td></tr>
+                            <tr><td>status</td><td>string</td><td>否</td><td>状态筛选：monitoring/stopped</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/monitoring/groups</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>添加监控群聊</h3>
+                        <p>添加新的群聊到监控列表</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>groupId</td><td>string</td><td>是</td><td>群聊ID</td></tr>
+                            <tr><td>groupName</td><td>string</td><td>是</td><td>群聊名称</td></tr>
+                            <tr><td>app</td><td>string</td><td>是</td><td>应用类型</td></tr>
+                            <tr><td>memberCount</td><td>number</td><td>否</td><td>群成员数量</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method delete">DELETE</span>
+                        <span class="endpoint-path">/api/monitoring/groups/{groupId}</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>删除监控群聊</h3>
+                        <p>从监控列表中删除指定群聊</p>
+                        
+                        <h4>路径参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>groupId</td><td>string</td><td>是</td><td>群聊ID</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/monitoring/start</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>开始监听</h3>
+                        <p>启动所有应用的自动监听功能</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>strategy</td><td>object</td><td>否</td><td>监听策略配置</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/monitoring/stop</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>停止监听</h3>
+                        <p>停止所有应用的自动监听功能</p>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method put">PUT</span>
+                        <span class="endpoint-path">/api/monitoring/apps/{appId}/toggle</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>切换应用监听状态</h3>
+                        <p>开启或关闭指定应用的监听功能</p>
+                        
+                        <h4>路径参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>appId</td><td>string</td><td>是</td><td>应用ID：wechat/alipay/dingtalk/juren</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 红包记录接口</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/redpackets/records</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取抢红包记录</h3>
+                        <p>分页获取用户的抢红包历史记录</p>
+                        
+                        <h4>查询参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>page</td><td>number</td><td>否</td><td>页码，默认1</td></tr>
+                            <tr><td>size</td><td>number</td><td>否</td><td>每页大小，默认20</td></tr>
+                            <tr><td>startDate</td><td>string</td><td>否</td><td>开始日期 (YYYY-MM-DD)</td></tr>
+                            <tr><td>endDate</td><td>string</td><td>否</td><td>结束日期 (YYYY-MM-DD)</td></tr>
+                            <tr><td>app</td><td>string</td><td>否</td><td>应用筛选</td></tr>
+                            <tr><td>group</td><td>string</td><td>否</td><td>群聊筛选</td></tr>
+                            <tr><td>status</td><td>string</td><td>否</td><td>状态筛选：success/failed</td></tr>
+                        </table>
+                        
+                        <h4>响应示例</h4>
+                        <div class="response-example">
+                            <h4>成功响应 (200)</h4>
+                            <div class="code-block">
+                                <pre>{
+  "code": 200,
+  "data": {
+    "records": [
+      {
+        "id": "rp_123",
+        "amount": "¥8.88",
+        "time": "2024-12-19T10:30:00Z",
+        "group": "家人群",
+        "sender": "妈妈",
+        "message": "新年快乐",
+        "status": "success",
+        "app": "wechat",
+        "responseTime": 0.1,
+        "rank": 1
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "size": 20,
+      "total": 1280,
+      "totalPages": 64
+    }
+  }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/redpackets/{recordId}</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取红包详情</h3>
+                        <p>获取指定红包记录的详细信息</p>
+                        
+                        <h4>路径参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>recordId</td><td>string</td><td>是</td><td>红包记录ID</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/redpackets/stats</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取统计数据</h3>
+                        <p>获取用户的红包统计数据</p>
+                        
+                        <h4>查询参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>period</td><td>string</td><td>否</td><td>统计周期：today/week/month/year，默认month</td></tr>
+                            <tr><td>startDate</td><td>string</td><td>否</td><td>开始日期</td></tr>
+                            <tr><td>endDate</td><td>string</td><td>否</td><td>结束日期</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 策略设置接口</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/strategy/current</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取当前策略</h3>
+                        <p>获取用户的抢红包策略配置</p>
+                        
+                        <h4>响应示例</h4>
+                        <div class="response-example">
+                            <h4>成功响应 (200)</h4>
+                            <div class="code-block">
+                                <pre>{
+  "code": 200,
+  "data": {
+    "isAutoGrabEnabled": true,
+    "minAmount": 0.01,
+    "maxAmount": 1000.00,
+    "responseDelay": 0.1,
+    "priorityGroups": ["工作群", "家人群"],
+    "excludedGroups": ["广告群"],
+    "timeFilter": {
+      "enabled": true,
+      "startTime": "08:00",
+      "endTime": "23:00"
+    },
+    "advancedSettings": {
+      "smartRecognition": true,
+      "antiDetectionMode": true
+    }
+  }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method put">PUT</span>
+                        <span class="endpoint-path">/api/strategy/update</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>更新策略</h3>
+                        <p>更新用户的抢红包策略配置</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>isAutoGrabEnabled</td><td>boolean</td><td>否</td><td>自动抢红包开关</td></tr>
+                            <tr><td>minAmount</td><td>number</td><td>否</td><td>最小金额</td></tr>
+                            <tr><td>maxAmount</td><td>number</td><td>否</td><td>最大金额</td></tr>
+                            <tr><td>responseDelay</td><td>number</td><td>否</td><td>响应延迟（秒）</td></tr>
+                            <tr><td>priorityGroups</td><td>string[]</td><td>否</td><td>优先群聊列表</td></tr>
+                            <tr><td>excludedGroups</td><td>string[]</td><td>否</td><td>排除群聊列表</td></tr>
+                            <tr><td>timeFilter</td><td>object</td><td>否</td><td>时间过滤设置</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/strategy/presets</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取策略预设</h3>
+                        <p>获取系统提供的策略预设模板</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔔 通知系统接口</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/notifications/settings</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取通知设置</h3>
+                        <p>获取用户的通知设置配置</p>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/notifications/test</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>测试通知</h3>
+                        <p>发送测试通知，验证通知设置是否正常</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>type</td><td>string</td><td>否</td><td>通知类型：redpacket/system，默认redpacket</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method put">PUT</span>
+                        <span class="endpoint-path">/api/notifications/settings</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>更新通知设置</h3>
+                        <p>更新用户的通知设置配置</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>notificationsEnabled</td><td>boolean</td><td>否</td><td>总开关</td></tr>
+                            <tr><td>soundEnabled</td><td>boolean</td><td>否</td><td>声音提醒</td></tr>
+                            <tr><td>vibrationEnabled</td><td>boolean</td><td>否</td><td>震动提醒</td></tr>
+                            <tr><td>redPacketNotifications</td><td>boolean</td><td>否</td><td>红包通知</td></tr>
+                            <tr><td>systemNotifications</td><td>boolean</td><td>否</td><td>系统通知</td></tr>
+                            <tr><td>marketingNotifications</td><td>boolean</td><td>否</td><td>营销通知</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/notifications/history</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>获取通知历史</h3>
+                        <p>获取用户的通知历史记录</p>
+                        
+                        <h4>查询参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>page</td><td>number</td><td>否</td><td>页码</td></tr>
+                            <tr><td>size</td><td>number</td><td>否</td><td>每页大小</td></tr>
+                            <tr><td>type</td><td>string</td><td>否</td><td>通知类型筛选</td></tr>
+                            <tr><td>isRead</td><td>boolean</td><td>否</td><td>已读状态筛选</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 数据分析接口</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/analytics/earnings</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>收益分析</h3>
+                        <p>获取用户的收益分析数据</p>
+                        
+                        <h4>查询参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>period</td><td>string</td><td>否</td><td>分析周期</td></tr>
+                            <tr><td>startDate</td><td>string</td><td>否</td><td>开始日期</td></tr>
+                            <tr><td>endDate</td><td>string</td><td>否</td><td>结束日期</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/analytics/overview</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>数据概览</h3>
+                        <p>获取用户的整体数据概览</p>
+                        
+                        <h4>响应示例</h4>
+                        <div class="response-example">
+                            <h4>成功响应 (200)</h4>
+                            <div class="code-block">
+                                <pre>{
+  "code": 200,
+  "data": {
+    "totalEarnings": 1256.80,
+    "totalRedPackets": 1280,
+    "successRate": 99.8,
+    "averageAmount": 0.98,
+    "highestAmount": 88.88,
+    "lowestAmount": 0.01,
+    "todayEarnings": 156.80,
+    "todayRedPackets": 15,
+    "weeklyGrowth": 12.5,
+    "monthlyGrowth": 8.3
+  }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/analytics/trends</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>趋势分析</h3>
+                        <p>获取红包抢取趋势数据</p>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/analytics/export</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>数据导出</h3>
+                        <p>导出用户的红包记录数据</p>
+                        
+                        <h4>查询参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>format</td><td>string</td><td>否</td><td>导出格式：csv/excel，默认csv</td></tr>
+                            <tr><td>startDate</td><td>string</td><td>否</td><td>开始日期</td></tr>
+                            <tr><td>endDate</td><td>string</td><td>否</td><td>结束日期</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📱 实时通信接口</h2>
+                
+                <div class="note">
+                    <h4>⚠️ 重要说明</h4>
+                    <p>以下接口使用 WebSocket 或 Server-Sent Events 实现实时通信：</p>
+                    <ul>
+                        <li><strong>红包检测通知</strong> - 实时推送检测到的红包信息</li>
+                        <li><strong>抢红包结果</strong> - 实时推送抢红包结果</li>
+                        <li><strong>监听状态更新</strong> - 实时更新应用监听状态</li>
+                        <li><strong>系统通知</strong> - 实时推送系统消息</li>
+                    </ul>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/ws/heartbeat</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>心跳检测</h3>
+                        <p>保持WebSocket连接活跃的心跳检测</p>
+                        
+                        <h4>请求参数</h4>
+                        <table class="params-table">
+                            <tr><th>参数名</th><th>类型</th><th>必填</th><th>说明</th></tr>
+                            <tr><td>timestamp</td><td>number</td><td>是</td><td>当前时间戳</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/ws/connect</span>
+                    </div>
+                    <div class="endpoint-description">
+                        <h3>WebSocket 连接</h3>
+                        <p>建立实时通信连接</p>
+                        
+                        <h4>连接参数</h4>
+                        <div class="code-block">
+                            <pre>ws://api.example.com/api/ws/connect?token={token}</pre>
+                        </div>
+                        
+                        <h4>消息类型</h4>
+                        <table class="params-table">
+                            <tr><th>类型</th><th>说明</th><th>数据格式</th></tr>
+                            <tr><td>redpacket_detected</td><td>红包检测通知</td><td>红包信息对象</td></tr>
+                            <tr><td>grab_result</td><td>抢红包结果</td><td>结果信息对象</td></tr>
+                            <tr><td>status_update</td><td>状态更新</td><td>状态信息对象</td></tr>
+                            <tr><td>system_notification</td><td>系统通知</td><td>通知信息对象</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 通用接口规范</h2>
+                
+                <h3>响应格式</h3>
+                <p>所有接口统一使用以下响应格式：</p>
+                
+                <div class="code-block">
+                    <pre>{
+  "code": 200,           // 状态码
+  "message": "success",  // 状态消息
+  "data": {},            // 响应数据
+  "timestamp": "2024-12-19T10:30:00Z"  // 响应时间
+}</pre>
+                </div>
+
+                <h3>错误响应格式</h3>
+                <div class="code-block">
+                    <pre>{
+  "code": 400,
+  "message": "参数错误",
+  "error": {
+    "field": "phone",
+    "message": "手机号格式不正确"
+  },
+  "timestamp": "2024-12-19T10:30:00Z"
+}</pre>
+                </div>
+
+                <h3>状态码说明</h3>
+                <table class="params-table">
+                    <tr><th>状态码</th><th>说明</th></tr>
+                    <tr><td>200</td><td>请求成功</td></tr>
+                    <tr><td>400</td><td>请求参数错误</td></tr>
+                    <tr><td>401</td><td>未授权，需要登录</td></tr>
+                    <tr><td>403</td><td>禁止访问</td></tr>
+                    <tr><td>404</td><td>资源不存在</td></tr>
+                    <tr><td>500</td><td>服务器内部错误</td></tr>
+                </table>
+
+                <h3>分页格式</h3>
+                <div class="code-block">
+                    <pre>{
+  "pagination": {
+    "page": 1,        // 当前页码
+    "size": 20,       // 每页大小
+    "total": 100,     // 总记录数
+    "totalPages": 5   // 总页数
+  }
+}</pre>
+                </div>
+
+                <h3>认证方式</h3>
+                <p>需要认证的接口在请求头中添加：</p>
+                <div class="code-block">
+                    <pre>Authorization: Bearer {token}</pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 数据模型定义</h2>
+                
+                <h3>用户模型 (User)</h3>
+                <div class="code-block">
+                    <pre>interface User {
+  id: string;                    // 用户ID
+  phone: string;                 // 手机号
+  nickname: string;              // 昵称
+  avatar?: string;               // 头像URL
+  totalEarnings: number;         // 总收益
+  todayEarnings: number;         // 今日收益
+  redPacketCount: number;        // 红包总数
+  successRate: number;           // 成功率
+  createdAt: Date;               // 创建时间
+  updatedAt: Date;               // 更新时间
+  lastLoginAt: Date;             // 最后登录时间
+}</pre>
+                </div>
+
+                <h3>红包记录模型 (RedPacketRecord)</h3>
+                <div class="code-block">
+                    <pre>interface RedPacketRecord {
+  id: string;                    // 记录ID
+  userId: string;                // 用户ID
+  app: string;                   // 应用类型
+  groupName: string;             // 群聊名称
+  sender: string;                // 发送者
+  amount: number;                // 金额
+  message?: string;              // 红包消息
+  status: 'success' | 'failed'; // 状态
+  responseTime: number;          // 响应时间
+  rank?: number;                 // 抢红包排名
+  createdAt: Date;               // 创建时间
+}</pre>
+                </div>
+
+                <h3>监听应用模型 (MonitoringApp)</h3>
+                <div class="code-block">
+                    <pre>interface MonitoringApp {
+  id: string;                    // 应用ID
+  name: string;                  // 应用名称
+  icon: string;                  // 应用图标
+  isMonitoring: boolean;         // 是否监听中
+  lastRedPacket?: RedPacketInfo; // 最后红包信息
+  todayCount: number;            // 今日红包数
+  totalEarnings: number;         // 总收益
+}</pre>
+                </div>
+
+                <h3>群聊模型 (MonitoringGroup)</h3>
+                <div class="code-block">
+                    <pre>interface MonitoringGroup {
+  id: string;                    // 群聊ID
+  groupId: string;               // 第三方群聊ID
+  groupName: string;             // 群聊名称
+  app: string;                   // 应用类型
+  memberCount: number;           // 群成员数量
+  isMonitoring: boolean;         // 是否监控中
+  lastRedPacket?: string;        // 最后红包时间
+  todayCount: number;            // 今日红包数
+  userId: string;                // 用户ID
+  createdAt: Date;               // 创建时间
+}</pre>
+                </div>
+
+                <h3>通知设置模型 (NotificationSettings)</h3>
+                <div class="code-block">
+                    <pre>interface NotificationSettings {
+  userId: string;                // 用户ID
+  notificationsEnabled: boolean; // 总开关
+  soundEnabled: boolean;         // 声音提醒
+  vibrationEnabled: boolean;     // 震动提醒
+  redPacketNotifications: boolean; // 红包通知
+  systemNotifications: boolean;  // 系统通知
+  marketingNotifications: boolean; // 营销通知
+  quietHours: {                  // 免打扰时间
+    enabled: boolean;
+    startTime: string;
+    endTime: string;
+  };
+  updatedAt: Date;               // 更新时间
+}</pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚀 部署和配置</h2>
+                
+                <h3>环境配置</h3>
+                <div class="code-block">
+                    <pre># 生产环境配置
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=mongodb://localhost:27017/redbag
+JWT_SECRET=your_jwt_secret_key
+REDIS_URL=redis://localhost:6379
+
+# 第三方服务配置
+SMS_API_KEY=your_sms_api_key
+PUSH_NOTIFICATION_KEY=your_push_key
+WEBSOCKET_ENABLED=true</pre>
+                </div>
+
+                <h3>数据库索引</h3>
+                <div class="code-block">
+                    <pre>// 用户表索引
+db.users.createIndex({ "phone": 1 }, { unique: true })
+db.users.createIndex({ "createdAt": -1 })
+
+// 红包记录表索引
+db.redpackets.createIndex({ "userId": 1, "createdAt": -1 })
+db.redpackets.createIndex({ "app": 1, "status": 1 })
+db.redpackets.createIndex({ "createdAt": -1 })
+
+// 监听应用表索引
+db.monitoring_apps.createIndex({ "userId": 1, "appId": 1 }, { unique: true })
+
+// 群聊表索引
+db.monitoring_groups.createIndex({ "userId": 1, "groupId": 1 }, { unique: true })
+db.monitoring_groups.createIndex({ "app": 1, "isMonitoring": 1 })
+
+// 通知设置表索引
+db.notification_settings.createIndex({ "userId": 1 }, { unique: true })
+
+// 策略设置表索引
+db.strategy_settings.createIndex({ "userId": 1 }, { unique: true })</pre>
+                </div>
+            </div>
+
+            <div class="note">
+                <h4>📝 开发建议</h4>
+                <ul>
+                    <li>建议使用 TypeScript 开发后端，确保类型安全</li>
+                    <li>实现接口版本控制，便于后续升级</li>
+                    <li>添加接口限流和防刷机制</li>
+                    <li>实现完整的日志记录和监控</li>
+                    <li>考虑使用 Redis 缓存热点数据</li>
+                    <li>实现接口文档自动生成（如 Swagger）</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
