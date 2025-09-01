@@ -6,6 +6,10 @@ var cors = require('cors');
 var helmet = require('helmet');
 var rateLimit = require('express-rate-limit');
 
+// 导入Swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./src/config/swagger');
+
 // 导入数据库连接
 const { connectDB } = require('./src/config/database');
 
@@ -64,6 +68,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // 测试路由
 app.use('/test', testRouter);
+
+// Swagger API文档
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: '🧧 自动抢红包应用 API 文档',
+  customfavIcon: '/favicon.ico'
+}));
 
 // 健康检查路由
 app.use('/health', healthRouter);

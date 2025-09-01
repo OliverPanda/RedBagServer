@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动抢红包应用 - 完整原型</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .prototype-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .prototype-title {
+            text-align: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .prototype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .phone-frame {
+            background: #000;
+            border-radius: 25px;
+            padding: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            width: 320px;
+            height: 640px;
+            margin: 0 auto;
+        }
+        
+        .phone-screen {
+            background: #fff;
+            border-radius: 20px;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .time {
+            font-weight: 700;
+        }
+        
+        .status-icons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .status-icon {
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 2px;
+        }
+        
+        .nav-bar {
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            font-size: 20px;
+        }
+        
+        .content {
+            padding: 20px;
+            height: calc(100% - 104px);
+            overflow-y: auto;
+        }
+        
+        .hero-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .hero-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .hero-subtitle {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .secondary-btn {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b6b;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        .monitor-list {
+            margin-bottom: 20px;
+        }
+        
+        .monitor-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .monitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .group-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .status-badge {
+            background: #27ae60;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .monitor-info {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        .record-item {
+            background: white;
+            border: 1px solid #ecf0f1;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .record-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+        
+        .record-time {
+            color: #95a5a6;
+            font-size: 12px;
+        }
+        
+        .record-group {
+            color: #2c3e50;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .setting-item {
+            background: white;
+            border: 1px solid #ecf0f1;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .setting-info h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .setting-info p {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        .toggle-switch {
+            width: 50px;
+            height: 30px;
+            background: #bdc3c7;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .toggle-switch.active {
+            background: #27ae60;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+        
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .profile-phone {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .menu-item {
+            background: white;
+            border: 1px solid #ecf0f1;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .menu-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #7f8c8d;
+        }
+        
+        .menu-text h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+        
+        .menu-text p {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        .arrow-right {
+            color: #bdc3c7;
+            font-size: 18px;
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="prototype-container">
+        <h1 class="prototype-title">自动抢红包应用 - 完整原型设计</h1>
+        
+        <div class="prototype-grid">
+            <!-- 首页 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        自动抢红包
+                    </div>
+                    <div class="content">
+                        <div class="hero-section">
+                            <div class="hero-icon">🧧</div>
+                            <h1 class="hero-title">智能抢红包</h1>
+                            <p class="hero-subtitle">自动监控群聊，智能抢红包<br>让您不错过每一个红包</p>
+                        </div>
+                        
+                        <button class="action-btn">🚀 立即开始抢红包</button>
+                        <button class="action-btn secondary-btn">📊 查看抢红包记录</button>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">128</div>
+                                <div class="stat-label">今日抢到红包</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">¥156.80</div>
+                                <div class="stat-label">今日收益</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">15</div>
+                                <div class="stat-label">监控群聊数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">99.8%</div>
+                                <div class="stat-label">成功率</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 监控页面 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        红包监控
+                    </div>
+                    <div class="content">
+                        <h2 class="page-title">正在监控的群聊</h2>
+                        
+                        <div class="monitor-list">
+                            <div class="monitor-item">
+                                <div class="monitor-header">
+                                    <div class="group-name">家人群</div>
+                                    <div class="status-badge">监控中</div>
+                                </div>
+                                <div class="monitor-info">最后红包: 2分钟前 | 今日抢到: 8个</div>
+                            </div>
+                            
+                            <div class="monitor-item">
+                                <div class="monitor-header">
+                                    <div class="group-name">工作群</div>
+                                    <div class="status-badge">监控中</div>
+                                </div>
+                                <div class="monitor-info">最后红包: 5分钟前 | 今日抢到: 12个</div>
+                            </div>
+                            
+                            <div class="monitor-item">
+                                <div class="monitor-header">
+                                    <div class="group-name">朋友群</div>
+                                    <div class="status-badge">监控中</div>
+                                </div>
+                                <div class="monitor-info">最后红包: 1分钟前 | 今日抢到: 15个</div>
+                            </div>
+                            
+                            <div class="monitor-item">
+                                <div class="monitor-header">
+                                    <div class="group-name">同学群</div>
+                                    <div class="status-badge">监控中</div>
+                                </div>
+                                <div class="monitor-info">最后红包: 10分钟前 | 今日抢到: 6个</div>
+                            </div>
+                        </div>
+                        
+                        <button class="action-btn">➕ 添加监控群聊</button>
+                        <button class="action-btn secondary-btn">⚙️ 监控设置</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 抢红包记录 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        抢红包记录
+                    </div>
+                    <div class="content">
+                        <h2 class="page-title">今日抢红包记录</h2>
+                        
+                        <div class="record-item">
+                            <div class="record-header">
+                                <div class="record-amount">¥8.88</div>
+                                <div class="record-time">刚刚</div>
+                            </div>
+                            <div class="record-group">家人群 - 新年快乐</div>
+                        </div>
+                        
+                        <div class="record-item">
+                            <div class="record-header">
+                                <div class="record-amount">¥5.20</div>
+                                <div class="record-time">2分钟前</div>
+                            </div>
+                            <div class="record-group">朋友群 - 恭喜发财</div>
+                        </div>
+                        
+                        <div class="record-item">
+                            <div class="record-header">
+                                <div class="record-amount">¥12.34</div>
+                                <div class="record-time">5分钟前</div>
+                            </div>
+                            <div class="record-group">工作群 - 项目完成</div>
+                        </div>
+                        
+                        <div class="record-item">
+                            <div class="record-header">
+                                <div class="record-amount">¥3.14</div>
+                                <div class="record-time">8分钟前</div>
+                            </div>
+                            <div class="record-group">同学群 - 聚会通知</div>
+                        </div>
+                        
+                        <div class="record-item">
+                            <div class="record-header">
+                                <div class="record-amount">¥6.66</div>
+                                <div class="record-time">12分钟前</div>
+                            </div>
+                            <div class="record-group">家人群 - 周末聚餐</div>
+                        </div>
+                        
+                        <button class="action-btn secondary-btn">📊 查看详细统计</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 设置页面 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        设置
+                    </div>
+                    <div class="content">
+                        <h2 class="page-title">应用设置</h2>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>自动抢红包</h3>
+                                <p>开启后自动抢取监控群聊中的红包</p>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>红包提醒</h3>
+                                <p>收到红包时发送通知提醒</p>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>智能延迟</h3>
+                                <p>随机延迟避免被检测</p>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>过滤小金额</h3>
+                                <p>忽略金额小于1元的红包</p>
+                            </div>
+                            <div class="toggle-switch"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>夜间模式</h3>
+                                <p>22:00-6:00自动开启</p>
+                            </div>
+                            <div class="toggle-switch"></div>
+                        </div>
+                        
+                        <button class="action-btn secondary-btn">🔒 隐私设置</button>
+                        <button class="action-btn secondary-btn">📱 通知设置</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 个人中心 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        个人中心
+                    </div>
+                    <div class="content">
+                        <div class="profile-header">
+                            <div class="profile-avatar">👤</div>
+                            <div class="profile-name">张三</div>
+                            <div class="profile-phone">138****8888</div>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <div class="menu-left">
+                                <div class="menu-icon">💰</div>
+                                <div class="menu-text">
+                                    <h3>我的收益</h3>
+                                    <p>查看抢红包收益统计</p>
+                                </div>
+                            </div>
+                            <div class="arrow-right">›</div>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <div class="menu-left">
+                                <div class="menu-icon">📊</div>
+                                <div class="menu-text">
+                                    <h3>数据统计</h3>
+                                    <p>抢红包数据分析和报告</p>
+                                </div>
+                            </div>
+                            <div class="arrow-right">›</div>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <div class="menu-left">
+                                <div class="menu-icon">🎯</div>
+                                <div class="menu-text">
+                                    <h3>抢红包策略</h3>
+                                    <p>自定义抢红包规则</p>
+                                </div>
+                            </div>
+                            <div class="arrow-right">›</div>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <div class="menu-left">
+                                <div class="menu-icon">🔔</div>
+                                <div class="menu-text">
+                                    <h3>消息通知</h3>
+                                    <p>通知设置和消息管理</p>
+                                </div>
+                            </div>
+                            <div class="arrow-right">›</div>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <div class="menu-left">
+                                <div class="menu-icon">❓</div>
+                                <div class="menu-text">
+                                    <h3>帮助中心</h3>
+                                    <p>使用说明和常见问题</p>
+                                </div>
+                            </div>
+                            <div class="arrow-right">›</div>
+                        </div>
+                        
+                        <button class="action-btn secondary-btn">退出登录</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 红包详情页 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        红包详情
+                    </div>
+                    <div class="content">
+                        <div class="hero-section">
+                            <div class="hero-icon" style="background: linear-gradient(135deg, #f39c12, #e67e22);">🧧</div>
+                            <h1 class="hero-title">恭喜抢到红包！</h1>
+                            <p class="hero-subtitle">来自: 家人群<br>发送者: 妈妈</p>
+                        </div>
+                        
+                        <div class="stat-card" style="margin-bottom: 20px;">
+                            <div class="stat-number" style="font-size: 36px; color: #f39c12;">¥8.88</div>
+                            <div class="stat-label">红包金额</div>
+                        </div>
+                        
+                        <div class="record-item">
+                            <div class="record-header">
+                                <div class="record-amount">¥8.88</div>
+                                <div class="record-time">刚刚</div>
+                            </div>
+                            <div class="record-group">家人群 - 新年快乐</div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">第1名</div>
+                                <div class="stat-label">抢红包排名</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">0.1秒</div>
+                                <div class="stat-label">响应速度</div>
+                            </div>
+                        </div>
+                        
+                        <button class="action-btn">💬 感谢发送者</button>
+                        <button class="action-btn secondary-btn">📤 分享到朋友圈</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 添加监控群聊 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        添加监控群聊
+                    </div>
+                    <div class="content">
+                        <h2 class="page-title">选择要监控的群聊</h2>
+                        
+                        <div class="monitor-item">
+                            <div class="monitor-header">
+                                <div class="group-name">家人群</div>
+                                <div class="status-badge" style="background: #e74c3c;">已监控</div>
+                            </div>
+                            <div class="monitor-info">成员: 15人 | 今日红包: 8个</div>
+                        </div>
+                        
+                        <div class="monitor-item">
+                            <div class="monitor-header">
+                                <div class="group-name">工作群</div>
+                                <div class="status-badge" style="background: #e74c3c;">已监控</div>
+                            </div>
+                            <div class="monitor-info">成员: 32人 | 今日红包: 12个</div>
+                        </div>
+                        
+                        <div class="monitor-item">
+                            <div class="monitor-header">
+                                <div class="group-name">朋友群</div>
+                                <div class="status-badge" style="background: #e74c3c;">已监控</div>
+                            </div>
+                            <div class="monitor-info">成员: 28人 | 今日红包: 15个</div>
+                        </div>
+                        
+                        <div class="monitor-item">
+                            <div class="monitor-header">
+                                <div class="group-name">同学群</div>
+                                <div class="status-badge" style="background: #e74c3c;">已监控</div>
+                            </div>
+                            <div class="monitor-info">成员: 45人 | 今日红包: 6个</div>
+                        </div>
+                        
+                        <div class="monitor-item">
+                            <div class="monitor-header">
+                                <div class="group-name">邻居群</div>
+                                <div class="status-badge" style="background: #27ae60;">未监控</div>
+                            </div>
+                            <div class="monitor-info">成员: 23人 | 今日红包: 3个</div>
+                        </div>
+                        
+                        <div class="monitor-item">
+                            <div class="monitor-header">
+                                <div class="group-name">兴趣群</div>
+                                <div class="status-badge" style="background: #27ae60;">未监控</div>
+                            </div>
+                            <div class="monitor-info">成员: 67人 | 今日红包: 18个</div>
+                        </div>
+                        
+                        <button class="action-btn">✅ 确认选择</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 收益统计页 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        我的收益
+                    </div>
+                    <div class="content">
+                        <h2 class="page-title">收益统计</h2>
+                        
+                        <div class="stat-card" style="margin-bottom: 20px;">
+                            <div class="stat-number" style="font-size: 28px;">¥1,256.80</div>
+                            <div class="stat-label">本月总收益</div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">¥156.80</div>
+                                <div class="stat-label">今日收益</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">¥89.50</div>
+                                <div class="stat-label">昨日收益</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">1,280</div>
+                                <div class="stat-label">本月红包数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">99.8%</div>
+                                <div class="stat-label">成功率</div>
+                            </div>
+                        </div>
+                        
+                        <div class="record-item">
+                            <div class="record-header">
+                                <div class="record-amount">最高单笔</div>
+                                <div class="record-time">¥88.88</div>
+                            </div>
+                            <div class="record-group">来自: 工作群 - 项目奖金</div>
+                        </div>
+                        
+                        <div class="record-item">
+                            <div class="record-header">
+                                <div class="record-amount">平均金额</div>
+                                <div class="record-time">¥9.82</div>
+                            </div>
+                            <div class="record-group">本月红包平均金额</div>
+                        </div>
+                        
+                        <button class="action-btn secondary-btn">📊 查看详细图表</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 通知设置页 -->
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <div class="time">9:41</div>
+                        <div class="status-icons">
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                            <div class="status-icon"></div>
+                        </div>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="back-btn">‹</div>
+                        通知设置
+                    </div>
+                    <div class="content">
+                        <h2 class="page-title">通知设置</h2>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>红包通知</h3>
+                                <p>抢到红包时发送通知</p>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>声音提醒</h3>
+                                <p>抢到红包时播放提示音</p>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>震动提醒</h3>
+                                <p>抢到红包时震动提醒</p>
+                            </div>
+                            <div class="toggle-switch"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>免打扰模式</h3>
+                                <p>22:00-8:00不发送通知</p>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>重要通知</h3>
+                                <p>大金额红包特殊提醒</p>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>群聊筛选</h3>
+                                <p>只接收重要群聊通知</p>
+                            </div>
+                            <div class="toggle-switch"></div>
+                        </div>
+                        
+                        <button class="action-btn secondary-btn">🔔 测试通知</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
