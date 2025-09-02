@@ -23,7 +23,7 @@ var redPacketsRouter = require('./src/routes/redpackets');
 var strategyRouter = require('./src/routes/strategy');
 var analyticsRouter = require('./src/routes/analytics');
 var healthRouter = require('./src/routes/health');
-var testRouter = require('./src/routes/test');
+
 
 var app = express();
 
@@ -66,8 +66,7 @@ app.use(cookieParser());
 // 静态文件服务
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 测试路由
-app.use('/test', testRouter);
+
 
 // Swagger API文档
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
