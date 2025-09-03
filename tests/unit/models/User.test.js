@@ -66,7 +66,8 @@ describe('User Model', () => {
         await duplicateUser.save();
         fail('Should have thrown duplicate key error');
       } catch (error) {
-        expect(error.code).toBe(11000);
+        // MongoDB duplicate key error can have different error codes
+        expect(error.code === 11000 || error.code === 11001).toBe(true);
       }
     });
 

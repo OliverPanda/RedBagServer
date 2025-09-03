@@ -139,9 +139,6 @@ router.get('/records', authenticateToken, redPacketController.getRedPacketRecord
  *       500:
  *         description: 服务器内部错误
  */
-// 获取红包详情
-router.get('/:recordId', authenticateToken, redPacketController.getRedPacketDetail);
-
 /**
  * @swagger
  * /api/redpackets/stats:
@@ -206,8 +203,11 @@ router.get('/:recordId', authenticateToken, redPacketController.getRedPacketDeta
  *       500:
  *         description: 服务器内部错误
  */
-// 获取统计数据
+// 获取统计数据 - 必须在动态路由之前定义
 router.get('/stats', authenticateToken, redPacketController.getRedPacketStats);
+
+// 获取红包详情 - 动态路由放在最后
+router.get('/:recordId', authenticateToken, redPacketController.getRedPacketDetail);
 
 /**
  * @swagger

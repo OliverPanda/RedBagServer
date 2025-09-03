@@ -84,26 +84,24 @@ describe('RedPacket Controller', () => {
       await redPacketController.getRedPacketDetail(req, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
-      expect(mockRes.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          code: 200,
-          message: '获取红包详情成功',
-          data: expect.objectContaining({
-            id: record._id.toString(),
-            amount: expect.any(Number),
-            app: expect.any(String),
-            group: expect.any(String),
-            sender: expect.any(String),
-            status: expect.any(String),
-            message: expect.any(String),
-            rank: expect.any(Number),
-            responseTime: expect.any(Number),
-            metadata: expect.any(Object),
-            time: expect.any(String)
-          }),
-          timestamp: expect.any(String)
-        })
-      );
+      expect(mockRes.json).toHaveBeenCalledTimes(1);
+      
+      const response = mockRes.json.mock.calls[0][0];
+      expect(response.code).toBe(200);
+      expect(response.message).toBe('获取红包详情成功');
+      expect(response.data.id).toBeDefined();
+      expect(response.data.id.toString()).toBe(record._id.toString());
+      expect(response.data.amount).toBe(1);
+      expect(response.data.app).toBe('wechat');
+      expect(response.data.group).toBe('测试群组');
+      expect(response.data.sender).toBe('测试发送者');
+      expect(response.data.status).toBe('success');
+      expect(response.data.message).toBe('恭喜发财');
+      expect(response.data.rank).toBe(1);
+      expect(response.data.responseTime).toBe(100);
+      expect(response.data.metadata).toEqual({});
+      expect(response.data.time).toBeDefined();
+      expect(response.timestamp).toBeDefined();
     });
   });
 });

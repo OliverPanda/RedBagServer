@@ -2,12 +2,11 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const config = require('../config/config');
 const { createResponse } = require('../middleware/validation');
+const { generateAccessToken, generateRefreshToken } = require('../middleware/tokenRefresh');
 
-// 生成JWT令牌
+// 生成JWT令牌（保持向后兼容）
 const generateToken = (userId) => {
-  return jwt.sign({ userId }, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn
-  });
+  return generateAccessToken(userId);
 };
 
 // 发送验证码
@@ -101,11 +100,15 @@ const register = async (req, res) => {
     user.lastLoginAt = new Date();
     await user.save();
 
+    // 生成刷新token
+    const refreshToken = generateRefreshToken(user._id);
+
     return createResponse(res, 200, '注册成功', {
       userId: user._id,
       phone: user.phone,
       nickname: user.nickname,
       token,
+      refreshToken,
       expiresIn: config.jwt.expiresIn
     });
 
@@ -215,11 +218,15 @@ const login = async (req, res) => {
     user.lastLoginAt = new Date();
     await user.save();
 
+    // 生成刷新token
+    const refreshToken = generateRefreshToken(user._id);
+
     return createResponse(res, 200, '登录成功', {
       userId: user._id,
       phone: user.phone,
       nickname: user.nickname,
       token,
+      refreshToken,
       expiresIn: config.jwt.expiresIn
     });
 

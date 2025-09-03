@@ -50,22 +50,18 @@ const authenticateToken = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    if (error.name === 'JsonWebTokenError') {
+    // 处理所有JWT相关错误
+    if (error.name === 'JsonWebTokenError' || 
+        error.name === 'NotBeforeError' || 
+        error.name === 'TokenExpiredError' ||
+        error.message?.includes('jwt') ||
+        error.message?.includes('token')) {
       return res.status(401).json({
         code: 401,
         message: '访问令牌无效',
         error: {
           field: 'token',
           message: '访问令牌格式错误或已损坏'
-        }
-      });
-    } else if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({
-        code: 401,
-        message: '访问令牌已过期',
-        error: {
-          field: 'token',
-          message: '访问令牌已过期，请重新登录'
         }
       });
     }

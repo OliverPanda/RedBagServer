@@ -122,10 +122,9 @@ describe('Security Tests', () => {
 
     test('should reject invalid JWT tokens', async () => {
       const invalidTokens = [
-        'invalid-token',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.invalid.signature',
-        'Bearer invalid',
-        ''
+        'Bearer invalid-token',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.invalid.signature',
+        'Bearer not-a-jwt-token'
       ];
 
       for (const token of invalidTokens) {
@@ -134,8 +133,17 @@ describe('Security Tests', () => {
           .set('Authorization', token)
           .expect(401);
 
-        expect(response.body.message).toBe('访问令牌缺失');
+        expect(response.body.message).toBe('访问令牌无效');
       }
+    });
+
+    test('should reject missing JWT tokens', async () => {
+      const response = await request(app)
+        .get('/api/redpackets/records')
+        .set('Authorization', '')
+        .expect(401);
+
+      expect(response.body.message).toBe('访问令牌缺失');
     });
 
     test('should reject expired JWT tokens', async () => {

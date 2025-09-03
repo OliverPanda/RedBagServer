@@ -23,6 +23,7 @@ var redPacketsRouter = require('./src/routes/redpackets');
 var strategyRouter = require('./src/routes/strategy');
 var analyticsRouter = require('./src/routes/analytics');
 var healthRouter = require('./src/routes/health');
+var tokenRouter = require('./src/routes/token');
 
 
 var app = express();
@@ -80,6 +81,7 @@ app.use('/health', healthRouter);
 
 // API路由
 app.use('/api/auth', authRouter);
+app.use('/api/token', tokenRouter);
 app.use('/api/user', userRouter);
 app.use('/api/monitoring', monitoringRouter);
 app.use('/api/redpackets', redPacketsRouter);

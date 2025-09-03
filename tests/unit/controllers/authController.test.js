@@ -12,6 +12,7 @@ const {
 
 // Mock JWT
 jest.mock('jsonwebtoken');
+jwt.sign.mockReturnValue('mock-jwt-token');
 
 describe('Auth Controller', () => {
   let mockRes;
@@ -113,20 +114,17 @@ describe('Auth Controller', () => {
       await authController.register(req, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
-      expect(mockRes.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          code: 200,
-          message: '注册成功',
-          data: expect.objectContaining({
-            phone: '13800138000',
-            nickname: '测试用户',
-            token: undefined,
-            userId: expect.any(String),
-            expiresIn: expect.any(String)
-          }),
-          timestamp: expect.any(String)
-        })
-      );
+      expect(mockRes.json).toHaveBeenCalledTimes(1);
+      
+      const response = mockRes.json.mock.calls[0][0];
+      expect(response.code).toBe(200);
+      expect(response.message).toBe('注册成功');
+      expect(response.data.phone).toBe('13800138000');
+      expect(response.data.nickname).toBe('测试用户');
+      expect(response.data.token).toBe('mock-jwt-token');
+      expect(response.data.userId).toBeDefined();
+      expect(response.data.expiresIn).toBe('1h');
+      expect(response.timestamp).toBeDefined();
     });
 
     test('should reject invalid verification code', async () => {
@@ -192,20 +190,17 @@ describe('Auth Controller', () => {
       await authController.register(req, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
-      expect(mockRes.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          code: 200,
-          message: '注册成功',
-          data: expect.objectContaining({
-            phone: '13800138001',
-            nickname: '无密码用户',
-            token: undefined,
-            userId: expect.any(String),
-            expiresIn: expect.any(String)
-          }),
-          timestamp: expect.any(String)
-        })
-      );
+      expect(mockRes.json).toHaveBeenCalledTimes(1);
+      
+      const response = mockRes.json.mock.calls[0][0];
+      expect(response.code).toBe(200);
+      expect(response.message).toBe('注册成功');
+      expect(response.data.phone).toBe('13800138001');
+      expect(response.data.nickname).toBe('无密码用户');
+      expect(response.data.token).toBe('mock-jwt-token');
+      expect(response.data.userId).toBeDefined();
+      expect(response.data.expiresIn).toBe('1h');
+      expect(response.timestamp).toBeDefined();
     });
   });
 
@@ -228,20 +223,17 @@ describe('Auth Controller', () => {
       await authController.login(req, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
-      expect(mockRes.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          code: 200,
-          message: '登录成功',
-          data: expect.objectContaining({
-            phone: '13800138002',
-            nickname: expect.any(String),
-            token: undefined,
-            userId: expect.any(String),
-            expiresIn: expect.any(String)
-          }),
-          timestamp: expect.any(String)
-        })
-      );
+      expect(mockRes.json).toHaveBeenCalledTimes(1);
+      
+      const response = mockRes.json.mock.calls[0][0];
+      expect(response.code).toBe(200);
+      expect(response.message).toBe('登录成功');
+      expect(response.data.phone).toBe('13800138002');
+      expect(response.data.nickname).toBe('测试用户');
+      expect(response.data.token).toBe('mock-jwt-token');
+      expect(response.data.userId).toBeDefined();
+      expect(response.data.expiresIn).toBe('1h');
+      expect(response.timestamp).toBeDefined();
     });
 
     test('should reject login with invalid phone', async () => {
